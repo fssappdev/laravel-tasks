@@ -47,19 +47,16 @@ jobs:
       id-token: write #This is required for requesting the JWT
       contents: read #This is required for actions/checkout
 
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: php-app
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7C4B4AAD5E82406C89E35F08A2BA3988 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4F603F4DC5CF45B385E9945D9276E7BC }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C3205D8AA8B44CC286B3E8098A42BF52 }}
 
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+      
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
@@ -67,4 +64,8 @@ jobs:
           app-name: 'fssasset'
           slot-name: 'Production'
           package: .
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_ASSET_6DABE9E3B3F64AB3A29412403B5F196B }}
+
+          
+
           
